@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/detail_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:clipToPadding="false"
     android:descendantFocusability="blocksDescendants"
     android:padding="16dp"
@@ -13,7 +14,7 @@
         android:id="@+id/image_poster"
         android:layout_width="180dp"
         android:layout_height="280dp"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="8dp"
         android:src="@color/teal_200"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.00"
@@ -27,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
 
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/image_poster"
@@ -35,52 +36,81 @@
         tools:text="@string/title" />
 
     <TextView
+        android:id="@+id/label_year"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/release_date"
+        android:textColor="@color/teal_700"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/text_title"
+        app:layout_constraintTop_toBottomOf="@+id/text_title"/>
+
+    <TextView
         android:id="@+id/text_year"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="start"
-        android:textSize="18sp"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/text_title"
-        app:layout_constraintTop_toBottomOf="@+id/text_title"
+        app:layout_constraintStart_toStartOf="@+id/label_year"
+        app:layout_constraintTop_toBottomOf="@+id/label_year"
         tools:text="@string/year_release" />
 
-    <Button
-        android:id="@+id/btn_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/bg_button"
-        android:text="@string/view_cast"
-        android:textAllCaps="false"
-        android:textColor="@android:color/white"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@+id/ratingBar"
-        app:layout_constraintTop_toBottomOf="@+id/ratingBar" />
-
     <TextView
-        android:id="@+id/text_dir"
-        android:layout_width="wrap_content"
+        android:id="@+id/label_rating"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/director"
+        android:layout_marginTop="16dp"
+        android:text="@string/rating"
         android:textColor="@color/teal_700"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/btn_view"
-        app:layout_constraintTop_toBottomOf="@+id/btn_view" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/text_year"
+        app:layout_constraintTop_toBottomOf="@+id/text_year"/>
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        style="@android:style/Widget.DeviceDefault.RatingBar.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:isIndicator="false"
+        android:numStars="5"
+        android:stepSize="0.5"
+        app:layout_constraintStart_toStartOf="@+id/label_rating"
+        app:layout_constraintTop_toBottomOf="@+id/label_rating" />
 
     <TextView
-        android:id="@+id/text_director"
+        android:id="@+id/label_runtime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/runtime"
+        android:textColor="@color/teal_700"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/ratingBar"
+        app:layout_constraintTop_toBottomOf="@+id/ratingBar"/>
+
+    <TextView
+        android:id="@+id/text_runtime"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:textSize="14sp"
+        android:gravity="start"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/text_dir"
-        app:layout_constraintTop_toBottomOf="@+id/text_dir"
-        tools:text="@string/director" />
+        app:layout_constraintStart_toStartOf="@+id/label_runtime"
+        app:layout_constraintTop_toBottomOf="@+id/label_runtime"
+        tools:text="@string/text_runtime" />
 
     <TextView
         android:id="@+id/text_desc"
@@ -94,6 +124,18 @@
         app:layout_constraintTop_toBottomOf="@+id/image_poster"
         tools:layout_editor_absoluteX="16dp" />
 
+    <TextView
+        android:id="@+id/text_tagline"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="start"
+        android:textSize="15sp"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/text_desc"
+        app:layout_constraintTop_toBottomOf="@+id/text_desc"
+        tools:text="@string/tagline" />
 
     <TextView
         android:id="@+id/text_description"
@@ -101,8 +143,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@+id/text_desc"
-        app:layout_constraintTop_toBottomOf="@+id/text_desc"
+        app:layout_constraintStart_toStartOf="@+id/text_tagline"
+        app:layout_constraintTop_toBottomOf="@+id/text_tagline"
         tools:text="@string/description" />
 
     <ProgressBar
@@ -115,28 +157,6 @@
         tools:layout_editor_absoluteX="68dp"
         tools:visibility="visible" />
 
-    <RatingBar
-        android:id="@+id/ratingBar"
-        style="@style/Widget.AppCompat.RatingBar.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:isIndicator="false"
-        android:numStars="5"
-        android:theme="@style/RatingBar"
-        app:layout_constraintStart_toStartOf="@+id/text_year"
-        app:layout_constraintTop_toBottomOf="@+id/text_year" />
 
-    <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-        android:id="@+id/video_view"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="16dp"
-        app:autoPlay="false"
-        app:showFullScreenButton="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_description"
-        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

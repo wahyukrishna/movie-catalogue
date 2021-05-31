@@ -1,6 +1,5 @@
 package com.dicoding.mymoviecatalogue.ui.detail
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -8,12 +7,12 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.dicoding.mymoviecatalogue.R
-import com.dicoding.mymoviecatalogue.data.MovieEntity
+import com.dicoding.mymoviecatalogue.data.source.Source
+import com.dicoding.mymoviecatalogue.data.source.remote.response.MovieDetailResponse
+import com.dicoding.mymoviecatalogue.data.source.remote.response.TvDetailResponse
 import com.dicoding.mymoviecatalogue.databinding.ActivityDetailMovieBinding
 import com.dicoding.mymoviecatalogue.databinding.ContentDetailMovieBinding
-import com.dicoding.mymoviecatalogue.ui.cast.CastActivity
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.dicoding.mymoviecatalogue.viewmodel.ViewModelFactory
 
 class DetailMovieActivity : AppCompatActivity() {
 
@@ -35,61 +34,77 @@ class DetailMovieActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        val factory = ViewModelFactory.getInstance(this)
         val viewModel = ViewModelProvider(
-            this,
-            ViewModelProvider.NewInstanceFactory()
+            this, factory
         )[DetailMovieViewModel::class.java]
 
         val extras = intent.extras
         if (extras != null) {
-            val movieId = extras.getString(EXTRA_MOVIE)
-            val tvId = extras.getString(EXTRA_TV)
-            if (movieId != null) {
-                viewModel.setSelectedMovie(movieId)
-                populateMovie(viewModel.getMovie())
+            val movieId = extras.getInt(EXTRA_MOVIE, 0)
+            val tvId = extras.getInt(EXTRA_TV,0)
+            if (movieId != 0) {
+                viewModel.setSelectedMovieTv(movieId)
+                viewModel.getMovie(movieId).observe(this, {movie ->
+                    populateMovie(movie)
+                })
                 supportActionBar?.title = "Movie Details"
             }
-            if (tvId != null) {
-                viewModel.setSelectedMovie(tvId)
-                populateMovie(viewModel.getTV())
+            if (tvId != 0) {
+                viewModel.setSelectedMovieTv(tvId)
+                viewModel.getTV(tvId).observe(this, {tv ->
+                    populateTv(tv)
+                })
                 supportActionBar?.title = "TV Show Details"
             }
         }
 
     }
 
-    private fun populateMovie(movieEntity: MovieEntity) {
-        detailContentBinding.textTitle.text = movieEntity.title
-        detailContentBinding.textDescription.text = movieEntity.description
-        detailContentBinding.textYear.text = movieEntity.year
-        detailContentBinding.ratingBar.numStars = movieEntity.rating
-        detailContentBinding.textDirector.text = movieEntity.director
+    private fun populateMovie(movieEntity: MovieDetailResponse) {
+        detailContentBinding.apply {
+            val runtime = movieEntity.runtime.toString() + " Minutes"
+            val imageSource= Source.POSTER_URL+movieEntity.posterPath
+            textTitle.text = movieEntity.title
+            textDescription.text = movieEntity.overview
+            textRuntime.text = runtime
+            textYear.text = movieEntity.releaseDate
+            textTagline.text = movieEntity.tagline
+            ratingBar.rating = movieEntity.voteAverage.toFloat()/2
 
-        Glide.with(this)
-            .load(movieEntity.imagePath)
-            .transform(RoundedCorners(20))
-            .apply(
-                RequestOptions.placeholderOf(R.drawable.ic_loading)
-                    .error(R.drawable.ic_error)
-            )
-            .into(detailContentBinding.imagePoster)
-
-        val ytplayer = detailContentBinding.videoView
-        val videoId = movieEntity.videoId
-
-        lifecycle.addObserver(ytplayer)
-        ytplayer.getPlayerUiController()
-        ytplayer.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
-            override fun onReady(youTubePlayer: YouTubePlayer) {
-                youTubePlayer.loadVideo(videoId, 0F)
-            }
-        })
-
-        detailContentBinding.btnView.setOnClickListener {
-            val intent = Intent(this@DetailMovieActivity, CastActivity::class.java)
-            intent.putExtra(CastActivity.EXTRA_MOVIE_ID, movieEntity.castLink)
-            startActivity(intent)
+            Glide.with(this@DetailMovieActivity)
+                .load(imageSource)
+                .transform(RoundedCorners(20))
+                .apply(
+                    RequestOptions.placeholderOf(R.drawable.ic_loading)
+                        .error(R.drawable.ic_error)
+                )
+                .into(imagePoster)
         }
+
+
+    }
+
+    private fun populateTv(movieEntity: TvDetailResponse) {
+        detailContentBinding.apply {
+            val runtime = movieEntity.runtime[0].toString() + " Minutes/Episode"
+            textTitle.text = movieEntity.name
+            textDescription.text = movieEntity.overview
+            textYear.text = movieEntity.firstAirDate
+            textRuntime.text = runtime
+            textTagline.text = movieEntity.tagline
+            ratingBar.rating = movieEntity.voteAverage.toFloat()/2
+
+            Glide.with(this@DetailMovieActivity)
+                .load(Source.POSTER_URL+movieEntity.posterPath)
+                .transform(RoundedCorners(20))
+                .apply(
+                    RequestOptions.placeholderOf(R.drawable.ic_loading)
+                        .error(R.drawable.ic_error)
+                )
+                .into(imagePoster)
+        }
+
     }
 
 }

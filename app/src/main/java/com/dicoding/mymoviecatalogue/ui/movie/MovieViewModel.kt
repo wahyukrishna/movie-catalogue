@@ -1,9 +1,10 @@
 package com.dicoding.mymoviecatalogue.ui.movie
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.dicoding.mymoviecatalogue.data.MovieEntity
-import com.dicoding.mymoviecatalogue.utils.DataDummy
+import com.dicoding.mymoviecatalogue.data.source.remote.MovieTVRepository
+import com.dicoding.mymoviecatalogue.data.source.remote.response.ResultsItem
 
-class MovieViewModel : ViewModel() {
-    fun getMovies(): List<MovieEntity> = DataDummy.generateDummyMovie()
+class MovieViewModel(private val movieTVRespository: MovieTVRepository) : ViewModel() {
+    fun getMovies(): LiveData<List<ResultsItem>> = movieTVRespository.getMovies()
 }

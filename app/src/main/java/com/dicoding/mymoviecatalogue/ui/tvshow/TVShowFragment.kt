@@ -9,11 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.mymoviecatalogue.R
-import com.dicoding.mymoviecatalogue.data.MovieEntity
+import com.dicoding.mymoviecatalogue.data.source.remote.response.TvItem
 import com.dicoding.mymoviecatalogue.databinding.FragmentTvShowBinding
-import com.dicoding.mymoviecatalogue.ui.FragmentCallback
+import com.dicoding.mymoviecatalogue.ui.FragmentTvCallback
+import com.dicoding.mymoviecatalogue.viewmodel.ViewModelFactory
 
-class TVShowFragment : Fragment(), FragmentCallback {
+class TVShowFragment : Fragment(), FragmentTvCallback {
+
 
     private lateinit var fragmentTvBinding: FragmentTvShowBinding
 
@@ -28,29 +30,35 @@ class TVShowFragment : Fragment(), FragmentCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(activity != null){
-            val viewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())[TVShowViewModel::class.java]
-            val tv = viewModel.getTVShow()
-            val adapter = TVShowAdapter(this)
+        val factory = ViewModelFactory.getInstance(requireActivity())
+        val viewModel =  ViewModelProvider(this, factory)[TVShowViewModel::class.java]
 
-            adapter.setMovies(tv)
+        val tvAdapter = TVShowAdapter(this)
 
-            with(fragmentTvBinding.rvTv){
+        viewModel.getTv().observe(viewLifecycleOwner, { movie ->
+            if(movie != null){
+                tvAdapter.setMovies(movie)
+                tvAdapter.notifyDataSetChanged()
+            }
+        })
+
+            with(fragmentTvBinding.rvTv) {
                 layoutManager = LinearLayoutManager(context)
                 setHasFixedSize(true)
-                this.adapter = adapter
+                adapter = tvAdapter
             }
-        }
+
+
     }
 
-    override fun onShareClick(movie: MovieEntity) {
+    override fun onShareClick(tv: TvItem) {
         if(activity != null){
             val mimeType = "text/plain"
             ShareCompat.IntentBuilder
                     .from(requireActivity())
                     .setType(mimeType)
                     .setChooserTitle("Bagikan aplikasi ini sekarang.")
-                    .setText(resources.getString(R.string.share_text, movie.title))
+                    .setText(resources.getString(R.string.share_text, tv.title))
                     .startChooser()
         }
     }

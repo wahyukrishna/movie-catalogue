@@ -1,36 +1,20 @@
 package com.dicoding.mymoviecatalogue.ui.detail
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.dicoding.mymoviecatalogue.data.MovieEntity
-import com.dicoding.mymoviecatalogue.utils.DataDummy
+import com.dicoding.mymoviecatalogue.data.source.remote.MovieTVRepository
+import com.dicoding.mymoviecatalogue.data.source.remote.response.MovieDetailResponse
+import com.dicoding.mymoviecatalogue.data.source.remote.response.TvDetailResponse
 
-class DetailMovieViewModel : ViewModel() {
-    private lateinit var movieId: String
+class DetailMovieViewModel(private val movieTVRepository: MovieTVRepository) : ViewModel() {
+    private var movieId: Int = 0
 
-    fun setSelectedMovie(movieId: String) {
+    fun setSelectedMovieTv(movieId: Int) {
         this.movieId = movieId
     }
 
-    fun getMovie(): MovieEntity {
-        lateinit var movie: MovieEntity
-        val moviesEntity = DataDummy.generateDummyMovie()
-        for (movieEntity in moviesEntity) {
-            if (movieEntity.movieId == movieId) {
-                movie = movieEntity
-            }
-        }
-        return movie
-    }
+    fun getMovie(movieId: Int): LiveData<MovieDetailResponse> = movieTVRepository.getMovieDetails(movieId)
 
-    fun getTV(): MovieEntity {
-        lateinit var movie: MovieEntity
-        val moviesEntity = DataDummy.generateDummyTV()
-        for (movieEntity in moviesEntity) {
-            if (movieEntity.movieId == movieId) {
-                movie = movieEntity
-            }
-        }
-        return movie
-    }
+    fun getTV(movieId: Int): LiveData<TvDetailResponse> = movieTVRepository.getTvDetails(movieId)
 
 }

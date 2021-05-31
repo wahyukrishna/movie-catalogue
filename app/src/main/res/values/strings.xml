@@ -14,5 +14,11 @@
     <string name="share_text">Check latest movies and tv shows %s in MovieCatalogue</string>
     <string name="director">Director</string>
     <string name="splash_title">MovieCatalogue</string>
+    <string name="tagline">Tagline</string>
+    <string name="release_date">Release Date</string>
+    <string name="rating">Rating</string>
+    <string name="runtime">Runtime</string>
+    <string name="text_runtime">runtime</string>
+    <string name="image_splash">Splash logo</string>
 
 </resources>

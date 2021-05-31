@@ -9,11 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.mymoviecatalogue.R
-import com.dicoding.mymoviecatalogue.data.MovieEntity
+import com.dicoding.mymoviecatalogue.data.source.remote.response.ResultsItem
 import com.dicoding.mymoviecatalogue.databinding.FragmentMovieBinding
 import com.dicoding.mymoviecatalogue.ui.FragmentCallback
+import com.dicoding.mymoviecatalogue.viewmodel.ViewModelFactory
 
 class MovieFragment : Fragment(), FragmentCallback {
+
 
     private lateinit var fragmentMovieBinding: FragmentMovieBinding
 
@@ -28,27 +30,28 @@ class MovieFragment : Fragment(), FragmentCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (activity != null) {
-            val viewModel = ViewModelProvider(
-                this,
-                ViewModelProvider.NewInstanceFactory()
-            )[MovieViewModel::class.java]
-            val movies = viewModel.getMovies()
+
+            val factory = ViewModelFactory.getInstance(requireActivity())
+            val viewModel =  ViewModelProvider(this, factory)[MovieViewModel::class.java]
 
             val movieAdapter = MovieAdapter(this)
 
-            movieAdapter.setMovies(movies)
+            viewModel.getMovies().observe(viewLifecycleOwner, { movie ->
+                if(movie != null){
+                    movieAdapter.setMovies(movie)
+                    movieAdapter.notifyDataSetChanged()
+                }
+            })
 
             with(fragmentMovieBinding.rvMovie) {
                 layoutManager = LinearLayoutManager(context)
                 setHasFixedSize(true)
                 adapter = movieAdapter
             }
-
-
         }
     }
 
-    override fun onShareClick(movie: MovieEntity) {
+    override fun onShareClick(movie: ResultsItem) {
         if (activity != null) {
             val mimeType = "text/plain"
             ShareCompat.IntentBuilder
